@@ -2,17 +2,13 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Annotation profile for gateway-service" enabled="true">
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
-        </processorPath>
-        <module name="gateway-service" />
-        <module name="auth-services" />
-        <module name="auth-service" />
+        <module name="appointment-service" />
+        <module name="notification-service" />
       </profile>
       <profile name="Annotation profile for patient-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -22,14 +18,10 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
         <module name="patient-service" />
+        <module name="auth-services" />
+        <module name="auth-service" />
+        <module name="gateway-service" />
         <module name="doctor-service" />
-      </profile>
-      <profile name="Maven default annotation processors profile" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <module name="appointment-service" />
-        <module name="notification-service" />
       </profile>
     </annotationProcessing>
   </component>

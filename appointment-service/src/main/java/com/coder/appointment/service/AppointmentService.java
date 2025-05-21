@@ -9,10 +9,17 @@ import com.coder.appointment.model.AppointmentStatus;
 import com.coder.appointment.model.Doctor;
 import com.coder.appointment.model.Patient;
 import com.coder.appointment.repository.AppointmentRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class AppointmentService {
@@ -26,7 +33,13 @@ public class AppointmentService {
     @Autowired
     private AppointmentRepository appointmentRepository;
 
-    public Long createAppointment(AppointmentRequest appointmentRequest) {
+    @Autowired
+    KafkaTemplate<String ,String> kafkaTemplate;
+
+    public Long createAppointment(AppointmentRequest appointmentRequest) throws JsonProcessingException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
 
         Patient patient = patientClient.getPatientById(Long.parseLong(appointmentRequest.getPatientId()));
 
@@ -49,7 +62,25 @@ public class AppointmentService {
 
        System.out.println(appointment1);
 
+       String appointmentJson = objectMapper.writeValueAsString(appointment);
+
+       sendEventToKafka(appointmentJson);
+
        return appointment1.getId();
+    }
+
+    private void sendEventToKafka(String appointmentJson) {
+        String topicName="hospital";
+        CompletableFuture<SendResult<String,String>>  completableFuture = kafkaTemplate.send(topicName,appointmentJson);
+
+        completableFuture.whenComplete((result,exception)->{
+            if (exception == null){
+                RecordMetadata recordMetadata = result.getRecordMetadata();
+                System.out.println("Message sent successfully "+topicName);
+            }else {
+                exception.printStackTrace();
+            }
+        });
     }
 
     public List<Appointment> getallApointmnet() {

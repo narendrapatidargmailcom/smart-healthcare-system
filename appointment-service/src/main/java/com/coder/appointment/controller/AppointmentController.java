@@ -4,6 +4,7 @@ import com.coder.appointment.DTO.AppointmentRequest;
 import com.coder.appointment.DTO.GenericsResponse;
 import com.coder.appointment.model.Appointment;
 import com.coder.appointment.service.AppointmentService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class AppointmentController {
     private AppointmentService appointmentService;
 
     @PostMapping("/create")
-    public ResponseEntity<String> createAppointMent(@RequestBody AppointmentRequest appointmentRequest){
+    public ResponseEntity<String> createAppointMent(@RequestBody AppointmentRequest appointmentRequest) throws JsonProcessingException {
 
         Long genericsResponse=appointmentService.createAppointment(appointmentRequest);
         return ResponseEntity.ok("Appointment created successfully Id->"+genericsResponse);

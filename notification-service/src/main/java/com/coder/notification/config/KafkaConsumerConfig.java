@@ -19,10 +19,10 @@ import java.util.Map;
 @Configuration
 public class KafkaConsumerConfig {
 
-    @Value("${spring.kafka.consumer.bootstrap-servers}")
+    @Value("localhost:9092")
     private String KafkaAddress;
 
-    @Value("${spring.kafka.consumer.group-id}")
+    @Value("mygroupid")
     private String groupId;
 
 
@@ -33,7 +33,8 @@ public class KafkaConsumerConfig {
         Map<String,Object> propes = new HashMap<>();
 
         propes.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,KafkaAddress);
-        propes.put(ConsumerConfig.GROUP_ID_CONFIG,groupId);
+        propes.put(ConsumerConfig.GROUP_ID_CONFIG,"mygroupid");
+        propes.put(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG, "60000");
         propes.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         propes.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,StringDeserializer.class);
         propes.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false); // Disable auto-commit for better control
@@ -43,7 +44,7 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-  public ConcurrentKafkaListenerContainerFactory<String,Appointment> appointmentConcurrentKafkaListenerContainerFactory(){
+   public ConcurrentKafkaListenerContainerFactory<String,Appointment> appointmentConcurrentKafkaListenerContainerFactory(){
         ConcurrentKafkaListenerContainerFactory<String,Appointment> factory = new ConcurrentKafkaListenerContainerFactory<>();
 
          factory.setConsumerFactory(consumerFactory());
